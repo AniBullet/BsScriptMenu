@@ -1,0 +1,4 @@
+fn aboutme_macroScript = 
+(
+    macroScript macro_aboutme category:"BS_Scripts_menu_aboutme"  buttontext:">> 一键K动画 <<  必看" ( On Execute Do (filein  ((GetDir #scripts) + "\ScriptsMenu\menu.ms" )	))
+)	

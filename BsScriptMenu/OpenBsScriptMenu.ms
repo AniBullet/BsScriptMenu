@@ -1,1 +1,1 @@
-filein  ((GetDir #scripts) + "\ScriptsMenu\BsScriptMenu.ms" ))
+filein  ((GetDir #scripts) + "\ScriptsMenu\BsScriptMenu.ms" )

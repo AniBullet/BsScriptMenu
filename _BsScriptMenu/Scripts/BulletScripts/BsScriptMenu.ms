@@ -1,7 +1,3 @@
-fn_macro_Path = (GetDir #scripts) + "\BulletScripts\BsScriptsMenu\macro.ms"
-filein  fn_macro_Path
-
------------------------------------------------------
 global ii = 0 
 -----------------------------------------------------
 
@@ -27,7 +23,7 @@ fn recursive_menu subMenu subPath =
         ( 
             separator = menuMan.createSeparatorItem() 
             subMenu.addItem separator -1 
-        )--if(files.count>0)then 
+        ) 
         --creating subMenu 
         for i in dirArr do 
         ( 
@@ -36,16 +32,15 @@ fn recursive_menu subMenu subPath =
             subSubItem = menuMan.createSubMenuItem "name" subSubMenu 
             subMenu.addItem subSubItem -1 
             recursive_menu subSubMenu subSubPath 
-        )--for i in dirArr do 
-    )--if(dirArr.count>0)then 
-)--fn recursive_menu my_menu 
+        )
+    )
+)
 
 fn about_Menu subMenu =
 (
     separator = menuMan.createSeparatorItem() 
     subMenu.addItem separator -1 
 
-    --stt = aboutme_macroScript ()----------------aboutme ����λ��
     bbs = menuMan.createActionItem ("macro_aboutme" ) "BS_Scripts_menu_aboutme" 
     subMenu.addItem bbs -1  
 
@@ -83,7 +78,6 @@ deleting_previousMenu ()
 --------------------creating menu
 subMenu = menuMan.createMenu "BulletS" 
 subPath = "D:\\Program Files\\Autodesk\\BulletS" 
---subPath=(GetDir #scripts)+"/BulleS" 
 recursive_menu subMenu subPath
 about_Menu subMenu
 -----------------------updating menu 
@@ -91,4 +85,4 @@ mainMenuBar = menuMan.getMainMenuBar()
 subMenuItem = menuMan.createSubMenuItem "Test Menu" subMenu 
 subMenuIndex = mainMenuBar.numItems() - 1 
 mainMenuBar.addItem subMenuItem subMenuIndex 
-menuMan.updateMenuBar() 
+menuMan.updateMenuBar()

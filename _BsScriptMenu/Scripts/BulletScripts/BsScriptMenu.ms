@@ -139,7 +139,7 @@ rollout rolBsScriptMenu "BsScriptMenuConfig" width:460 height:160
 	(
 		HyperLink hlkAuthor "Bullet.S - S.银色子弹" align:#left width:160 color:(color 0 150 100) hovercolor:(color 0 150 150) visitedcolor:(color 0 150 100) address:"https://space.bilibili.com/2031113" across:3
 		HyperLink hlkTips "开源免费，请勿商用" align:#center width:120 color:(color 0 150 100) hovercolor:(color 0 150 150) visitedcolor:(color 0 150 100) address:"https://space.bilibili.com/2031113/lists/560782" 
-		Label lblVersion "- 版本：Aptx 1.0 -" width:100 align:#right 
+		Label lblVersion "- 版本：Aptx 1.0 -" width:120 align:#right 
 	)
 
     fn fnUninstallScriptMenu =
@@ -218,11 +218,23 @@ rollout rolBsScriptMenu "BsScriptMenuConfig" width:460 height:160
     )
     
     ----------------------------------------------------- 
-    fn deleting_previousMenu =
+    fn deleting_previousMenu subPath =
     (
-        subPath = iniBsScriptMenuPath
         if (subPath != undefined) and (subPath != "") then
         (
+            files=getFiles (subPath + ("/" + "*.m*")); sort files 
+            if (files.count>0) then
+            (
+                for i in files do 
+                (
+                    subMenuName = getFilenameFile i
+                    while ((menuMan.findMenu subMenuName) != undefined) do 
+                    (
+                        menuMan.unRegisterMenu (menuMan.findMenu subMenuName) 
+                        menuMan.updateMenuBar() 
+                    )
+                )
+            )
             dirArr2 = GetDirectories (subPath + "/*"); sort dirArr2
             if (dirArr2.count>0) then 
             ( 
@@ -230,24 +242,12 @@ rollout rolBsScriptMenu "BsScriptMenuConfig" width:460 height:160
                 (
                     subSubPath2 = substring m 1 (m.count-1) 
                     subSubMenuName = getFilenameFile subSubPath2
-                    if ((menuMan.findMenu subSubMenuName) != undefined) then 
+                    while ((menuMan.findMenu subSubMenuName) != undefined) do 
                     (
                         menuMan.unRegisterMenu (menuMan.findMenu subSubMenuName) 
                         menuMan.updateMenuBar() 
                     )
-                )
-            )
-            if ((menuMan.findMenu iniBsScriptMenuName) != undefined) then 
-            (  
-                menuMan.unRegisterMenu (menuMan.findMenu iniBsScriptMenuName)
-                menuMan.updateMenuBar()
-            ) 
-            if (lastMenuName != undefined and (lastMenuName as string) != "" and lastMenuName != iniBsScriptMenuName) then
-            (
-                if ((menuMan.findMenu lastMenuName) != undefined) then
-                (
-                    menuMan.unRegisterMenu (menuMan.findMenu lastMenuName)
-                    menuMan.updateMenuBar()
+                    deleting_previousMenu subSubPath2
                 )
             )
         )
@@ -255,7 +255,20 @@ rollout rolBsScriptMenu "BsScriptMenuConfig" width:460 height:160
 
     fn fnRefreshMenu =
     (
-        deleting_previousMenu ()
+        deleting_previousMenu iniBsScriptMenuPath
+        if (lastMenuName != undefined and (lastMenuName as string) != "" and lastMenuName != iniBsScriptMenuName) then
+        (
+            while ((menuMan.findMenu lastMenuName) != undefined) do
+            (
+                menuMan.unRegisterMenu (menuMan.findMenu lastMenuName)
+                menuMan.updateMenuBar()
+            )
+        )
+        while ((menuMan.findMenu iniBsScriptMenuName) != undefined) do 
+        (  
+            menuMan.unRegisterMenu (menuMan.findMenu iniBsScriptMenuName)
+            menuMan.updateMenuBar()
+        ) 
         --------------------creating menu
         subMenu = menuMan.createMenu iniBsScriptMenuName 
         subPath = iniBsScriptMenuPath
@@ -293,6 +306,12 @@ rollout rolBsScriptMenu "BsScriptMenuConfig" width:460 height:160
 	)
 	on btnRefreshMenu pressed do
 	(
+        if (edtPath.text != "") then (
+            iniBsScriptMenuPath = edtPath.text
+        )
+        if (edtMenuName.text != "") then (
+            iniBsScriptMenuName = edtMenuName.text
+        )
         fnSetBsScriptMenuConfig()
 		fnRefreshMenu()
         try(destroydialog rolBsScriptMenu)catch()
